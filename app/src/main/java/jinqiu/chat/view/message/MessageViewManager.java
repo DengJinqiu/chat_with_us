@@ -1,9 +1,10 @@
 package jinqiu.chat.view.message;
 
+import android.support.percent.PercentLayoutHelper;
+import android.support.percent.PercentRelativeLayout;
 import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
-import android.widget.TextView;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -17,28 +18,36 @@ public class MessageViewManager {
         messageViews = new LinkedList<>();
     }
 
-    public void addNewMessageView(TextMessage message) {
-        MessageView messageView = new MessageView(messageContainer.getContext());
-        TextView tv = new TextView(messageContainer.getContext());
-        tv.setText(message.getContext());
-        messageView.addView(tv);
+    public void addNewMessageView(TextMessage textMessage) {
+        TextMessageView messageView =
+                new TextMessageView(textMessage, messageContainer.getContext());
 
-        messageView.setId(messageView.generateViewId());
+        PercentRelativeLayout.LayoutParams params =
+                new PercentRelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        params.getPercentLayoutInfo().widthPercent = 0.6f;
+        if (textMessage.getUserType() == TextMessage.CLIENT) {
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        } else if (textMessage.getUserType() == TextMessage.COMPANY){
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        } else {
+            Log.e(TAG, "User type is unknown");
+        }
 
-        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, 100);
+
         if (messageViews.size() == 0) {
-            Log.i(TAG, "Add first new message");
+            Log.d(TAG, "Add first new message to view");
             params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         } else {
-            Log.i(TAG, "Append new message " + messageViews.getFirst().getId());
+            Log.d(TAG, "Append new message to view below " + messageViews.getFirst().getId());
             params.addRule(RelativeLayout.BELOW, messageViews.getFirst().getId());
         }
 
         messageViews.addFirst(messageView);
         messageContainer.addView(messageView, params);
+        messageView.startAnimation();
     }
 
-    private Deque<MessageView> messageViews;
+    private Deque<TextMessageView> messageViews;
 
     private RelativeLayout messageContainer;
 

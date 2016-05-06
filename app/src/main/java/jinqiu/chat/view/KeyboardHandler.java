@@ -11,7 +11,7 @@ public class KeyboardHandler extends InputMethodService implements KeyboardView.
 
     @Override
     public View onCreateInputView() {
-        keyboardView = (KeyboardView) getLayoutInflater().inflate(R.layout.view_keyboard, null);
+        keyboardView = (KeyboardView) getLayoutInflater().inflate(R.layout.keyboard_view, null);
         keyboard = new Keyboard(this, R.xml.qwerty);
         keyboardView.setKeyboard(keyboard);
         keyboardView.setOnKeyboardActionListener(this);

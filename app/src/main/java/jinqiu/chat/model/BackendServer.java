@@ -7,10 +7,10 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import jinqiu.chat.controller.ApplicationServer;
 import jinqiu.chat.controller.ApplicationServerMessenger;
+import jinqiu.chat.controller.RequestAndResponseType;
 import jinqiu.chat.controller.message.TextMessage;
 
 // Use a background thread to simulate the backend server
@@ -24,6 +24,7 @@ public class BackendServer extends HandlerThread {
                 if (handler == null) {
                     Log.e(TAG, "Server is not running");
                 }
+                Log.d(TAG, "Deliver message to backend server");
                 handler.sendMessage(message);
             }
         };
@@ -39,9 +40,15 @@ public class BackendServer extends HandlerThread {
 
         handler = new Handler(getLooper()) {
             @Override
-            public void handleMessage(Message msg) {
-                if (msg != null && msg.obj != null) {
-                    receiveNewMessage((String) msg.obj);
+            public void handleMessage(Message message) {
+                if (message == null || message.what != BackendServerMessenger.FROM_APPLICATION_SERVER) {
+                    Log.e(TAG, "Got invalid message");
+                    return;
+                }
+                if (message.arg1 == RequestAndResponseType.RESPONSE) {
+                    sendMessageResponse(message.arg2);
+                } else if (message.arg1 == RequestAndResponseType.REQUEST){
+                    receiveMessage((String) message.obj);
                 } else {
                     Log.e(TAG, "Got invalid message");
                 }
@@ -50,76 +57,79 @@ public class BackendServer extends HandlerThread {
     }
 
     // Send message to application server
-    public void sendMessageRequest(String request) {
+    private void sendMessageRequest(String request) {
         if (applicationServerMessenger == null) {
             Log.i(TAG, "No application server connected");
             return;
         }
-        Log.i(TAG, "Send message: " + request + " to all application server");
-        Message msg = new Message();
-        msg.what = ApplicationServerMessenger.FROM_BACKEND_SERVER;
-        msg.obj = request;
-        applicationServerMessenger.deliverMessage(msg);
+        Log.i(TAG, "Send message: " + request + " to application server");
+        Message message = new Message();
+        message.what = ApplicationServerMessenger.FROM_BACKEND_SERVER;
+        message.arg1 = RequestAndResponseType.REQUEST;
+        message.obj = request;
+        applicationServerMessenger.deliverMessage(message);
     }
 
     // The response returned by sendMessageRequest
-    public void sendMessageResponse(String response) {
-
+    private void sendMessageResponse(int status) {
+        Log.i(TAG, "Got response for sending message to application server.");
+        if (status == RequestAndResponseType.SUCCESS) {
+            Log.d(TAG, "Message send to application server successfully");
+        } else {
+            Log.e(TAG, "Message send to application server failed");
+        }
     }
 
-    // Receive new added message
-    // The response are:
-    // message.arg1 is 0: request failed,
-    // message.arg1 is 1: request success,
-    //    message.arg2 is 0: no additional fields in response
-    //    message.arg2 is 1: has additional fields in response (for return statement)
-    public void receiveNewMessage(String request) {
+    // Receive message from application server
+    private void receiveMessage(String request) {
+        Log.i(TAG, "Receive message: " + request + " from application server.");
         Message message = new Message();
         message.what = ApplicationServerMessenger.FROM_BACKEND_SERVER;
+        message.arg1 = RequestAndResponseType.RESPONSE;
 
-        boolean simulateResponse = false;
-        TextMessage responseTextMessage = null;
+        boolean simulateReply = false;
+        TextMessage replyTextMessage = null;
 
         if (request == null || request.length() == 0) {
-            Log.e(TAG, "The new message is empty");
-            message.arg1 = 0;
+            Log.e(TAG, "Message is invalid.");
+            message.arg2 = RequestAndResponseType.FAILED;
         } else {
-            Log.i(TAG, "Receive new message " + request);
-            message.arg1 = 1;
             try {
                 TextMessage textMessage = new TextMessage(request);
                 if (textMessage.getContext().contains("bill")) {
-                    message.arg2 = 1;
-                    Log.i(TAG, "Need to auto reply a statement");
-                    JSONObject response = new JSONObject();
-                    JSONObject detail = new JSONObject();
-                    detail.put("account_number", "728323981238921");
-                    detail.put("price", 60.85);
-                    detail.put("tax", 8.4);
-                    detail.put("due_date", 20160226);
-                    detail.put("total_due", 135.2);
-                    response.put("type", 1);
-                    response.put("detail", detail);
+                    Log.i(TAG, "Need to auto reply a statement.");
+                    message.arg2 = RequestAndResponseType.SUCCESS_WITH_ADDITIONAL_FIELDS;
+//                    JSONObject response = new JSONObject();
+//                    JSONObject detail = new JSONObject();
+//                    detail.put("account_number", "728323981238921");
+//                    detail.put("price", 60.85);
+//                    detail.put("tax", 8.4);
+//                    detail.put("due_date", 20160226);
+//                    detail.put("total_due", 135.2);
+//                    response.put("type", 1);
+//                    response.put("detail", detail);
                 } else {
-                    message.arg2 = 2;
-                    if (textMessage.getUserType() == TextMessage.CLIENT) {
-                        Log.i(TAG, "Simulate a response from the company");
-                        simulateResponse = true;
-                        responseTextMessage = new TextMessage(TextMessage.COMPANY,
-                                textMessage.getTimestamp(), textMessage.getContext());
-                    }
+                    Log.d(TAG, "No auto reply.");
+                    message.arg2 = RequestAndResponseType.SUCCESS;
+
+                    Log.i(TAG, "Simulate reply from company.");
+                    replyTextMessage = new TextMessage(TextMessage.COMPANY,
+                            textMessage.getTimestamp(), textMessage.getContext());
+                    simulateReply = true;
                 }
             } catch (JSONException e) {
-                message.arg1 = 0;
+                message.arg2 = RequestAndResponseType.FAILED;
                 Log.e(TAG, "Request failed, convert json: " + e.getMessage());
             }
         }
         applicationServerMessenger.deliverMessage(message);
 
-        if (simulateResponse && responseTextMessage != null) {
-            // Simulate the scenairo that the company replays this new message after 1 second
-            SystemClock.sleep(1000);
-            sendMessageResponse(responseTextMessage.toString());
+        // Simulate the scenairo that the company replies this new message after 2 second
+        if (simulateReply && replyTextMessage != null) {
+            Log.d(TAG, "Simulate reply from company after 2 second");
+            SystemClock.sleep(2000);
+            Log.d(TAG, "Reply from company: " + replyTextMessage.toString());
+            sendMessageRequest(replyTextMessage.toString());
         }
     }
 

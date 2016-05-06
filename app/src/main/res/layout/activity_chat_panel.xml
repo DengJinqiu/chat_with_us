@@ -9,11 +9,11 @@
         android:fillViewport="true"
         android:layout_above="@+id/input_field">
 
-        <RelativeLayout
+        <android.support.percent.PercentRelativeLayout
             android:id="@+id/message_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        </RelativeLayout>
+        </android.support.percent.PercentRelativeLayout>
     </ScrollView>
     <EditText
         android:id="@+id/input_field"

@@ -7,4 +7,3 @@
     android:inputType="textCapSentences|textAutoCorrect"
     android:windowSoftInputMode="stateVisible"
     android:layout_alignParentBottom="true"/>
-

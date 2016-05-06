@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical">
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -9,16 +9,24 @@
         android:fillViewport="true"
         android:layout_above="@+id/input_field">
 
-        <TableLayout
+        <RelativeLayout
             android:id="@+id/message_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:stretchColumns="1">
-        </TableLayout>
+            android:layout_height="match_parent">
+        </RelativeLayout>
     </ScrollView>
     <EditText
         android:id="@+id/input_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/send_button" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send"
+        android:id="@+id/send_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>

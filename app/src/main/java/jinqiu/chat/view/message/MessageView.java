@@ -1,16 +1,15 @@
 package jinqiu.chat.view.message;
 
 import android.content.Context;
-import android.view.View;
-import android.view.animation.Animation;
+import android.widget.RelativeLayout;
 
-import jinqiu.chat.controller.message.Message;
+import jinqiu.chat.controller.message.TextMessage;
 
 
-public class MessageView extends View {
+public class MessageView extends RelativeLayout {
     public MessageView(Context context) {
         super(context);
     }
 
-    private Message message;
+    private TextMessage message;
 }

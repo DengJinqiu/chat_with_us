@@ -1,8 +1,10 @@
 package jinqiu.chat.controller;
 
-import android.os.Handler;
 import android.os.Message;
 
 public interface ApplicationServerMessenger {
-    void sendMessage(Message message);
+    int FROM_CHAT_PANEL = 0;
+    int FROM_BACKEND_SERVER = 1;
+
+    void deliverMessage(Message message);
 }

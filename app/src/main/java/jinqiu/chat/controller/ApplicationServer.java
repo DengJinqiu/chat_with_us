@@ -17,7 +17,7 @@ public class ApplicationServer extends HandlerThread {
 
         applicationServerMessenger = new ApplicationServerMessenger() {
             @Override
-            public void sendMessage(Message message) {
+            public void deliverMessage(Message message) {
                 Log.i(TAG, "Sending message: " + message + " to application server");
                 Message msg = new Message();
                 handler.sendMessage(msg);
@@ -25,13 +25,40 @@ public class ApplicationServer extends HandlerThread {
         };
     }
 
-    // Send new message added by user to backend server
-    public void SendNewMessageRequest(String request) {
+    @Override
+    protected void onLooperPrepared() {
+        super.onLooperPrepared();
 
+        handler = new Handler(getLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case ApplicationServerMessenger.FROM_CHAT_PANEL:
+                        if (msg.obj != null && msg.obj.toString() != "") {
+                            sendNewMessageRequest(msg.obj.toString());
+                        } else {
+                            Log.e(TAG, "Message is invalid, do not send to backend server");
+                        }
+                        break;
+                    case ApplicationServerMessenger.FROM_BACKEND_SERVER:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+    }
+
+    // Send new message added by user to backend server
+    public void sendNewMessageRequest(String request) {
+        Message message = new Message();
+        message.what = BackendServerMessenger.FROM_APPLICATION_SERVER;
+        message.obj = request;
+        backendServerMessenger.deliverMessage(message);
     }
 
     // The response returned by SendNewMessage
-    public void SendNewMessageResponse(String response) {
+    public void sendNewMessageResponse(String response) {
 
     }
 

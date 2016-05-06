@@ -1,18 +1,18 @@
 package jinqiu.chat.controller.message;
 
-public class StatementMessage extends Message  {
-    public StatementMessage(UserType userType, int timestamp, String context,
-                            String accoutNumber, double price, double tax, int dueDate, double due) {
+public class StatementMessage extends TextMessage {
+    public StatementMessage(int userType, Long timestamp, String context,
+                            String accountNumber, double price, double tax, int dueDate, double due) {
         super(userType, timestamp, context);
 
-        this.accoutNumber = accoutNumber;
+        this.accountNumber = accountNumber;
         this.price = price;
         this.tax = tax;
         this.dueDate = dueDate;
         this.due = due;
     }
 
-    private String accoutNumber;
+    private String accountNumber;
     private double price;
     private double tax;
     private int dueDate;

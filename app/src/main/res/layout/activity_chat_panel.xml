@@ -12,8 +12,9 @@
         <android.support.percent.PercentRelativeLayout
             android:id="@+id/message_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </android.support.percent.PercentRelativeLayout>
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/panl_side_margin"
+            android:layout_marginRight="@dimen/panl_side_margin"/>
     </ScrollView>
     <EditText
         android:id="@+id/input_field"

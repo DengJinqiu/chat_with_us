@@ -3,6 +3,7 @@ package jinqiu.chat.view.message;
 import android.support.percent.PercentLayoutHelper;
 import android.support.percent.PercentRelativeLayout;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 
@@ -21,18 +22,17 @@ public class MessageViewManager {
     public void addNewMessageView(TextMessage textMessage) {
         TextMessageView messageView =
                 new TextMessageView(textMessage, messageContainer.getContext());
-
         PercentRelativeLayout.LayoutParams params =
-                new PercentRelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        params.getPercentLayoutInfo().widthPercent = 0.6f;
+                new PercentRelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        params.getPercentLayoutInfo().widthPercent = 0.9f;
+        params.setMargins(0, 15, 0, 15);
         if (textMessage.getUserType() == TextMessage.CLIENT) {
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        } else if (textMessage.getUserType() == TextMessage.COMPANY){
+        } else if (textMessage.getUserType() == TextMessage.COMPANY) {
             params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         } else {
             Log.e(TAG, "User type is unknown");
         }
-
 
         if (messageViews.size() == 0) {
             Log.d(TAG, "Add first new message to view");

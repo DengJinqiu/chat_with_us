@@ -2,11 +2,11 @@ package jinqiu.chat.view.message;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
-import android.support.percent.PercentLayoutHelper;
-import android.support.percent.PercentRelativeLayout;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
+import android.view.Gravity;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -26,16 +26,33 @@ public class TextMessageView extends RelativeLayout {
 
 
         GradientDrawable gd = new GradientDrawable();
-        gd.setColor(ContextCompat.getColor(context, R.color.colorMessageBackground));
-        gd.setCornerRadius(100);
-        gd.setStroke(2, Color.WHITE);
-
-        setBackground(gd);
-
 
         TextView tv = new TextView(context);
         tv.setText(textMessage.getContext());
-        this.addView(tv);
+
+        RelativeLayout.LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        tv.setPadding(60, 40, 60, 40);
+
+        if (textMessage.getUserType() == TextMessage.CLIENT) {
+            gd.setStroke(0, Color.WHITE);
+            gd.setColor(ContextCompat.getColor(context, R.color.colorMessageBackground));
+
+            gd.setCornerRadii(new float[] { 80, 80, 80, 80, 0, 0, 80, 80 });
+            tv.setGravity(Gravity.RIGHT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        } else {
+            gd.setStroke(5, Color.parseColor("#DFDEE2"));
+            gd.setColor(Color.WHITE);
+            tv.setGravity(Gravity.LEFT);
+            gd.setCornerRadii(new float[] { 80, 80, 80, 80, 80, 80, 0, 0 });
+
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        }
+
+        tv.setTypeface(Typeface.DEFAULT, 0);
+        tv.setTextSize(18);
+        tv.setBackground(gd);
+        this.addView(tv, params);
     }
 
     public void startAnimation() {

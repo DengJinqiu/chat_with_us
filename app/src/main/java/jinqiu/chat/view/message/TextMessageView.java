@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,7 +24,7 @@ public class TextMessageView extends RelativeLayout {
 
         this.setId(this.generateViewId());
         this.context = context;
-
+        this.textMessage = textMessage;
 
         GradientDrawable gd = new GradientDrawable();
 
@@ -56,19 +57,21 @@ public class TextMessageView extends RelativeLayout {
     }
 
     public void startAnimation() {
-        super.startAnimation(AnimationUtils.loadAnimation(context, R.anim.text_message));
+        super.startAnimation(inFromRightAnimation());
     }
 
     public Animation inFromRightAnimation() {
-        Animation inFromRight = new TranslateAnimation(
-                Animation.RELATIVE_TO_PARENT, +1.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f);
-        inFromRight.setDuration(500);
-        inFromRight.setInterpolator(new AccelerateInterpolator());
-        return inFromRight;
+        int tmp = textMessage.getUserType() == TextMessage.CLIENT ? 1 : 0;
+        Animation anim = new ScaleAnimation(
+                0, 1f, // Start and end values for the X axis scaling
+                0, 1f, // Start and end values for the Y axis scaling
+                Animation.RELATIVE_TO_SELF, tmp, // Pivot point of X scaling
+                Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
+        anim.setFillAfter(true); // Needed to keep the result of the animation
+        anim.setDuration(200);
+        return anim;
     }
 
     private Context context;
+    private TextMessage textMessage;
 }

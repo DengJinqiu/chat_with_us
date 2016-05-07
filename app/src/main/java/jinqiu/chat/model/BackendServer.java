@@ -7,10 +7,12 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import jinqiu.chat.controller.ApplicationServer;
 import jinqiu.chat.controller.ApplicationServerMessenger;
 import jinqiu.chat.controller.RequestAndResponseType;
+import jinqiu.chat.controller.message.StatementMessage;
 import jinqiu.chat.controller.message.TextMessage;
 
 // Use a background thread to simulate the backend server
@@ -97,17 +99,16 @@ public class BackendServer extends HandlerThread {
             try {
                 TextMessage textMessage = new TextMessage(request);
                 if (textMessage.getContext().contains("bill")) {
-                    Log.i(TAG, "Need to auto reply a statement.");
                     message.arg2 = RequestAndResponseType.SUCCESS_WITH_ADDITIONAL_FIELDS;
-//                    JSONObject response = new JSONObject();
-//                    JSONObject detail = new JSONObject();
-//                    detail.put("account_number", "728323981238921");
-//                    detail.put("price", 60.85);
-//                    detail.put("tax", 8.4);
-//                    detail.put("due_date", 20160226);
-//                    detail.put("total_due", 135.2);
-//                    response.put("type", 1);
-//                    response.put("detail", detail);
+
+                    StatementMessage statementMessage =
+                            new StatementMessage(TextMessage.COMPANY,
+                                                 textMessage.getTimestamp(),
+                                                 "Here is your current statment",
+                                                 "728323981238921", 60.85, 8.4, 20160226, 135.2);
+
+                    Log.i(TAG, "Auto reply a statement to application server: " + statementMessage.toString());
+                    message.obj = statementMessage.toString();
                 } else {
                     Log.d(TAG, "No auto reply.");
                     message.arg2 = RequestAndResponseType.SUCCESS;

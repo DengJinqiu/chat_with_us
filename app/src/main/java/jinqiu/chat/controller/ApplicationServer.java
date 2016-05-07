@@ -7,6 +7,7 @@ import android.util.Log;
 
 import org.json.JSONException;
 
+import jinqiu.chat.controller.message.StatementMessage;
 import jinqiu.chat.controller.message.TextMessage;
 import jinqiu.chat.model.BackendServer;
 import jinqiu.chat.model.BackendServerMessenger;
@@ -93,7 +94,18 @@ public class ApplicationServer extends HandlerThread {
                 Log.d(TAG, "Message send to application server successfully.");
                 break;
             case RequestAndResponseType.SUCCESS_WITH_ADDITIONAL_FIELDS:
-                Log.d(TAG, "Message send to application server successfully, has auto replay.");
+                Log.d(TAG, "Message send to application server successfully, " +
+                           " has auto replay " + details);
+                try {
+                    StatementMessage statementMessage  = new StatementMessage(details);
+                    Message messageToChatPanel = new Message();
+                    messageToChatPanel.what = ChatPanelMessenger.FROM_APPLICATION_SERVER;
+                    messageToChatPanel.obj = statementMessage;
+                    chatPanelMessenger.deliverMessage(messageToChatPanel);
+                } catch (JSONException e) {
+                    Log.e(TAG, "Cannot parse the auto reply " + details);
+                    e.printStackTrace();
+                }
                 break;
             default:
                 Log.e(TAG, "Message send to backend server failed.");

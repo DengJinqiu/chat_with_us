@@ -24,16 +24,20 @@ public class TextMessage {
     @Override
     public String toString() {
         try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put(USER_TYPE, this.userType);
-            jsonObject.put(TIME_STAMP, this.timestamp);
-            jsonObject.put(CONTEXT, this.context);
-            return jsonObject.toString();
+            return toJSONObject().toString();
         } catch (JSONException e) {
             e.printStackTrace();
             Log.i(TAG, "Cannot convert to Json string");
             return "";
         }
+    }
+
+    public JSONObject toJSONObject() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(USER_TYPE, this.userType);
+        jsonObject.put(TIME_STAMP, this.timestamp);
+        jsonObject.put(CONTEXT, this.context);
+        return jsonObject;
     }
 
     public int getUserType() {

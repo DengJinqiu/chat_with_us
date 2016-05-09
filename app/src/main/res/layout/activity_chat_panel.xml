@@ -3,11 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:fillViewport="true"
-        android:layout_above="@+id/input_field">
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/input_bar">
 
         <android.support.percent.PercentRelativeLayout
             android:id="@+id/message_container"
@@ -16,18 +18,30 @@
             android:layout_marginLeft="@dimen/panl_side_margin"
             android:layout_marginRight="@dimen/panl_side_margin"/>
     </ScrollView>
-    <EditText
-        android:id="@+id/input_field"
+
+    <RelativeLayout
+        android:id="@+id/input_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@+id/send_button" />
+        android:layout_alignParentBottom="true" >
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Send"
-        android:id="@+id/send_button"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+        <EditText
+            android:id="@+id/input_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="false"
+            android:maxLines="3"
+            android:scrollbars="vertical"
+            android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
+            android:imeOptions="flagNoExtractUi"
+            android:layout_toStartOf="@+id/send_button" />
+
+        <Button
+            android:id="@+id/send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
 </RelativeLayout>

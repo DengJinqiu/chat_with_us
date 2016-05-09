@@ -104,7 +104,7 @@ public class BackendServer extends HandlerThread {
                     StatementMessage statementMessage =
                             new StatementMessage(TextMessage.COMPANY,
                                                  textMessage.getTimestamp(),
-                                                 "Here is your current statment",
+                                                 "Here is your current statment:",
                                                  "728323981238921", 60.85, 8.4, 20160226, 135.2);
 
                     Log.i(TAG, "Auto reply a statement to application server: " + statementMessage.toString());

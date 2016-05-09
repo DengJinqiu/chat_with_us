@@ -68,7 +68,7 @@ public class TextMessageView extends RelativeLayout {
                 Animation.RELATIVE_TO_SELF, tmp, // Pivot point of X scaling
                 Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
         anim.setFillAfter(true); // Needed to keep the result of the animation
-        anim.setDuration(200);
+        anim.setDuration(2000);
         return anim;
     }
 

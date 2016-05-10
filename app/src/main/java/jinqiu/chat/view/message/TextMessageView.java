@@ -6,30 +6,27 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import jinqiu.chat.R;
 import jinqiu.chat.controller.message.TextMessage;
 
-public class TextMessageView extends LinearLayout {
+public class TextMessageView extends RelativeLayout {
     public TextMessageView(TextMessage textMessage, Context context) {
         super(context);
 
         this.textMessage = textMessage;
 
-        this.setOrientation(LinearLayout.VERTICAL);
-
         GradientDrawable gradientDrawable = new GradientDrawable();
 
-        TextView textView = new TextView(context);
-        textView.setText(textMessage.getContext());
+        inputField = new TextView(context);
+        inputField.setId(inputField.generateViewId());
+        inputField.setText(textMessage.getContext());
 
-        textView.setPadding(60, 40, 60, 40);
+        inputField.setPadding(60, 40, 60, 40);
 
         RelativeLayout.LayoutParams inputFieldParams =
                 new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -41,7 +38,7 @@ public class TextMessageView extends LinearLayout {
             inputFieldParams.setMargins(50, 0, 0, 0);
 
             gradientDrawable.setCornerRadii(new float[] { 80, 80, 80, 80, 0, 0, 80, 80 });
-            textView.setGravity(Gravity.RIGHT);
+            inputField.setGravity(Gravity.RIGHT);
             inputFieldParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         } else {
             gradientDrawable.setStroke(5, Color.parseColor("#DFDEE2"));
@@ -50,20 +47,15 @@ public class TextMessageView extends LinearLayout {
             inputFieldParams.setMargins(0, 0, 50, 0);
 
             gradientDrawable.setCornerRadii(new float[] { 80, 80, 80, 80, 80, 80, 0, 0 });
-            textView.setGravity(Gravity.LEFT);
+            inputField.setGravity(Gravity.LEFT);
             inputFieldParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         }
 
-        textView.setTypeface(Typeface.DEFAULT, 0);
-        textView.setTextSize(18);
-        textView.setBackground(gradientDrawable);
+        inputField.setTypeface(Typeface.DEFAULT, 0);
+        inputField.setTextSize(18);
+        inputField.setBackground(gradientDrawable);
 
-        RelativeLayout relativeLayout = new RelativeLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        relativeLayout.addView(textView, inputFieldParams);
-
-        this.addView(relativeLayout, layoutParams);
+        this.addView(inputField, inputFieldParams);
     }
 
     public void startAnimation() {
@@ -79,4 +71,6 @@ public class TextMessageView extends LinearLayout {
     }
 
     private TextMessage textMessage;
+
+    protected TextView inputField;
 }

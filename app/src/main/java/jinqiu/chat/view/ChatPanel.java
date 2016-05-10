@@ -15,10 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import jinqiu.chat.R;
-import jinqiu.chat.controller.ApplicationServer;
-import jinqiu.chat.controller.ApplicationServerMessenger;
+import jinqiu.chat.controller.application_server.ApplicationServer;
+import jinqiu.chat.controller.application_server.ApplicationServerMessenger;
+import jinqiu.chat.controller.database.AuditTrailDbHelper;
 import jinqiu.chat.controller.message.TextMessage;
-import jinqiu.chat.model.BackendServer;
+import jinqiu.chat.model.backend_server.BackendServer;
 import jinqiu.chat.view.message.MessageViewManager;
 
 public class ChatPanel extends AppCompatActivity {
@@ -106,9 +107,8 @@ public class ChatPanel extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Long tsLong = System.currentTimeMillis() / 1000;
                 TextMessage textMessage =
-                        new TextMessage(TextMessage.CLIENT, tsLong, inputField.getText().toString());
+                        new TextMessage(TextMessage.CLIENT, inputField.getText().toString());
                 Log.d(TAG, "Add new message " + textMessage.toString() + " to chat panel");
                 messageViewManager.addNewMessageView(textMessage);
                 Log.d(TAG, "Send new message " +  textMessage.toString() + " to application server");

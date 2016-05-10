@@ -6,9 +6,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class StatementMessage extends TextMessage {
-    public StatementMessage(int userType, Long timestamp, String context,
+    public StatementMessage(int userType, String context,
                             String accountNumber, double price, double tax, int dueDate, double due) {
-        super(userType, timestamp, context);
+        super(userType, context);
 
         this.accountNumber = accountNumber;
         this.price = price;
@@ -29,7 +29,6 @@ public class StatementMessage extends TextMessage {
 
     @Override
     public String toString() {
-        JSONObject jsonObject = new JSONObject();
         try {
             return toJSONObject().toString();
         } catch (JSONException e) {
@@ -41,7 +40,7 @@ public class StatementMessage extends TextMessage {
 
     public JSONObject toJSONObject() throws JSONException {
         JSONObject jsonObject = super.toJSONObject();
-        jsonObject.put(StatementMessage.ACCOUNT_NUMBER, getAccoutNumber());
+        jsonObject.put(StatementMessage.ACCOUNT_NUMBER, getAccountNumber());
         jsonObject.put(StatementMessage.PRICE, getPrice());
         jsonObject.put(StatementMessage.TAX, getTax());
         jsonObject.put(StatementMessage.DUE_DATE, getDueDate());
@@ -53,7 +52,7 @@ public class StatementMessage extends TextMessage {
         return dueDate;
     }
 
-    public String getAccoutNumber() {
+    public String getAccountNumber() {
         return accountNumber;
     }
 

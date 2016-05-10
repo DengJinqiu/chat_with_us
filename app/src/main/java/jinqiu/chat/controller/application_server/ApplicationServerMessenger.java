@@ -1,4 +1,4 @@
-package jinqiu.chat.controller;
+package jinqiu.chat.controller.application_server;
 
 import android.os.Message;
 

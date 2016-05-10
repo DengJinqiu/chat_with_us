@@ -15,9 +15,10 @@ public class TextMessage {
         this.userType = jsonValue.getInt(USER_TYPE);
     }
 
-    public TextMessage(int userType, Long timestamp, String context) {
+    public TextMessage(int userType, String context) {
         this.userType = userType;
-        this.timestamp = timestamp;
+        // Update timestamp when add message to chat panel
+        this.timestamp = (long) 0;
         this.context = context;
     }
 
@@ -46,6 +47,11 @@ public class TextMessage {
 
     public Long getTimestamp() {
         return timestamp;
+    }
+
+    public void updateTimestamp() {
+        timestamp = System.currentTimeMillis() / 1000;
+        Log.i(TAG, "Update timestamp to " + timestamp);
     }
 
     public String getContext() {

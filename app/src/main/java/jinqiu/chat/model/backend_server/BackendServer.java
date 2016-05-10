@@ -1,4 +1,4 @@
-package jinqiu.chat.model;
+package jinqiu.chat.model.backend_server;
 
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -7,11 +7,10 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import jinqiu.chat.controller.ApplicationServer;
-import jinqiu.chat.controller.ApplicationServerMessenger;
-import jinqiu.chat.controller.RequestAndResponseType;
+import jinqiu.chat.controller.application_server.ApplicationServer;
+import jinqiu.chat.controller.application_server.ApplicationServerMessenger;
+import jinqiu.chat.controller.application_server.RequestAndResponseType;
 import jinqiu.chat.controller.message.StatementMessage;
 import jinqiu.chat.controller.message.TextMessage;
 
@@ -103,7 +102,6 @@ public class BackendServer extends HandlerThread {
 
                     StatementMessage statementMessage =
                             new StatementMessage(TextMessage.COMPANY,
-                                                 textMessage.getTimestamp(),
                                                  "Here is your current statment:",
                                                  "728323981238921", 60.85, 8.4, 20160226, 135.2);
 
@@ -114,8 +112,7 @@ public class BackendServer extends HandlerThread {
                     message.arg2 = RequestAndResponseType.SUCCESS;
 
                     Log.i(TAG, "Simulate reply from company.");
-                    replyTextMessage = new TextMessage(TextMessage.COMPANY,
-                            textMessage.getTimestamp(), textMessage.getContext());
+                    replyTextMessage = new TextMessage(TextMessage.COMPANY, textMessage.getContext());
                     simulateReply = true;
                 }
             } catch (JSONException e) {

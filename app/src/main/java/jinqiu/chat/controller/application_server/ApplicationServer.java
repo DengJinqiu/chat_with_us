@@ -1,4 +1,4 @@
-package jinqiu.chat.controller;
+package jinqiu.chat.controller.application_server;
 
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -9,8 +9,8 @@ import org.json.JSONException;
 
 import jinqiu.chat.controller.message.StatementMessage;
 import jinqiu.chat.controller.message.TextMessage;
-import jinqiu.chat.model.BackendServer;
-import jinqiu.chat.model.BackendServerMessenger;
+import jinqiu.chat.model.backend_server.BackendServer;
+import jinqiu.chat.model.backend_server.BackendServerMessenger;
 import jinqiu.chat.view.ChatPanelMessenger;
 
 // Simulate the server running on the application side
@@ -95,7 +95,7 @@ public class ApplicationServer extends HandlerThread {
                 break;
             case RequestAndResponseType.SUCCESS_WITH_ADDITIONAL_FIELDS:
                 Log.d(TAG, "Message send to application server successfully, " +
-                           " has auto replay " + details);
+                           "has auto replay " + details);
                 try {
                     StatementMessage statementMessage  = new StatementMessage(details);
                     Message messageToChatPanel = new Message();

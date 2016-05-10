@@ -1,4 +1,4 @@
-package jinqiu.chat.controller;
+package jinqiu.chat.controller.application_server;
 
 // There are two pairs of request and response between backend server and application server
 // 1. Send new added message from application server to backend server

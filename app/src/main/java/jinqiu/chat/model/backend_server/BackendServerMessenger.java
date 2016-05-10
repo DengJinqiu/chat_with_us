@@ -1,4 +1,4 @@
-package jinqiu.chat.model;
+package jinqiu.chat.model.backend_server;
 
 import android.os.Message;
 

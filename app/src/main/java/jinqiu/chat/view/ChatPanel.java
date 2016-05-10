@@ -1,15 +1,19 @@
 package jinqiu.chat.view;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.percent.PercentRelativeLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import jinqiu.chat.R;
 import jinqiu.chat.controller.ApplicationServer;
@@ -67,9 +71,39 @@ public class ChatPanel extends AppCompatActivity {
 
         applicationServer.registerBackendServer(backendServer);
 
-        messageViewManager = new MessageViewManager((RelativeLayout) findViewById(R.id.message_container));
+        messageViewManager = new MessageViewManager((RelativeLayout) findViewById(R.id.message_container),
+                                                    (ScrollView) findViewById(R.id.scroll_view));
         final EditText inputField = (EditText) findViewById(R.id.input_field);
         Button button = (Button) findViewById(R.id.send_button);
+
+        PercentRelativeLayout percentRelativeLayout = (PercentRelativeLayout) findViewById(R.id.message_container);
+        percentRelativeLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+
+            ScrollView scrollView = (ScrollView) findViewById(R.id.scroll_view);
+
+            @Override
+            public void onLayoutChange(View view, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                Log.d(TAG, "New layout: " + top + " " + left + " " + bottom + " " + right);
+                Log.d(TAG, "Old layout: " + oldTop + " " + oldLeft + " " + oldBottom + " " + oldRight);
+
+                Log.d(TAG, "Message view height: " + view.getHeight() + ". Scroll view height: " + scrollView.getHeight());
+                Log.d(TAG, "Scroll to: " + Math.max(0, view.getHeight() - scrollView.getHeight()));
+                scrollView.scrollTo(0, Math.max(0, view.getHeight() - scrollView.getHeight()));
+            }
+        });
+
+        findViewById(R.id.message_container).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    Log.d(TAG, "Touch screen, clear the focus of input field.");
+                    InputMethodManager inputMethodManager = (InputMethodManager)  getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    findViewById(R.id.input_field).clearFocus();
+                }
+                return true;
+            }
+        });
 
         button.setOnClickListener(new View.OnClickListener() {
 
@@ -87,7 +121,6 @@ public class ChatPanel extends AppCompatActivity {
 
                 applicationServer.getApplicationServerMessenger().deliverMessage(msg);
                 inputField.setText("");
-                inputField.clearFocus();
             }
         });
     }

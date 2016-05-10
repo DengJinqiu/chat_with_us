@@ -7,11 +7,8 @@ import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -68,7 +65,7 @@ public class TextMessageView extends RelativeLayout {
                 Animation.RELATIVE_TO_SELF, tmp, // Pivot point of X scaling
                 Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
         anim.setFillAfter(true); // Needed to keep the result of the animation
-        anim.setDuration(2000);
+        anim.setDuration(500);
         return anim;
     }
 

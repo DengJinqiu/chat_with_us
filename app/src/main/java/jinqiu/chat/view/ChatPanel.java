@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.percent.PercentRelativeLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -12,7 +11,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import jinqiu.chat.R;
@@ -71,13 +70,12 @@ public class ChatPanel extends AppCompatActivity {
 
         applicationServer.registerBackendServer(backendServer);
 
-        messageViewManager = new MessageViewManager((RelativeLayout) findViewById(R.id.message_container),
-                                                    (ScrollView) findViewById(R.id.scroll_view));
+        messageViewManager = new MessageViewManager((LinearLayout) findViewById(R.id.message_container));
         final EditText inputField = (EditText) findViewById(R.id.input_field);
         Button button = (Button) findViewById(R.id.send_button);
 
-        PercentRelativeLayout percentRelativeLayout = (PercentRelativeLayout) findViewById(R.id.message_container);
-        percentRelativeLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.message_container);
+        linearLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
 
             ScrollView scrollView = (ScrollView) findViewById(R.id.scroll_view);
 
@@ -106,7 +104,6 @@ public class ChatPanel extends AppCompatActivity {
         });
 
         button.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
                 Long tsLong = System.currentTimeMillis() / 1000;

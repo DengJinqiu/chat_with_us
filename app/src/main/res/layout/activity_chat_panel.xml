@@ -6,20 +6,18 @@
     <ScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:fillViewport="true"
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/input_bar"
         android:focusableInTouchMode="true"
-        android:focusable="true" >
+        android:focusable="true"
+        android:layout_above="@+id/input_bar">
 
         <LinearLayout
             android:id="@+id/message_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/panl_side_margin"
-            android:paddingRight="@dimen/panl_side_margin"
             android:focusableInTouchMode="true"
             android:focusable="true" />
     </ScrollView>

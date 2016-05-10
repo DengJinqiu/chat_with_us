@@ -128,7 +128,7 @@ public class BackendServer extends HandlerThread {
         // Simulate the scenairo that the company replies this new message after 2 second
         if (simulateReply && replyTextMessage != null) {
             Log.d(TAG, "Simulate reply from company after 2 second");
-            SystemClock.sleep(2000);
+            SystemClock.sleep(0);
             Log.d(TAG, "Reply from company: " + replyTextMessage.toString());
             sendMessageRequest(replyTextMessage.toString());
         }

@@ -23,43 +23,41 @@ public class MessageViewManager {
         this.context = messageContainer.getContext();
     }
 
-    public void addNewMessageView(TextMessage textMessage) {
+    public void addMessageView(TextMessage textMessage, boolean newMessage) {
         TextMessageView messageView;
-        textMessage.updateTimestamp();
+        if (newMessage) {
+            textMessage.updateTimestamp();
+        }
 
         if (textMessage instanceof StatementMessage) {
             Log.i(TAG, "Add statement message");
             messageView =
                     new StatementMessageView((StatementMessage) textMessage, context);
-            AsyncTask asyncTask = new AsyncTask<StatementMessage, Boolean, Boolean>() {
+            AsyncTask asyncTask = new AsyncTask<StatementMessage, Void, Void>() {
                 @Override
-                protected Boolean doInBackground(StatementMessage... textMessages) {
-                    for (StatementMessage message : textMessages) {
-                        AuditTrailDbHelper auditTrailDbHelper = new AuditTrailDbHelper(context);
-                        auditTrailDbHelper.insertStatementMessage(message);
-                    }
-                    return true;
+                protected Void doInBackground(StatementMessage... textMessages) {
+                    AuditTrailDbHelper auditTrailDbHelper = new AuditTrailDbHelper(context);
+                    auditTrailDbHelper.insertStatementMessage(textMessages[0]);
+                    return null;
                 }
             };
-
-            asyncTask.execute(new StatementMessage[]{(StatementMessage) textMessage});
+            if (newMessage) {
+                asyncTask.execute(new StatementMessage[]{(StatementMessage) textMessage});
+            }
         } else if (textMessage instanceof TextMessage) {
             Log.i(TAG, "Add text message");
             messageView = new TextMessageView(textMessage, messageContainer.getContext());
-            AsyncTask asyncTask = new AsyncTask<TextMessage, Boolean, Boolean>() {
+            AsyncTask asyncTask = new AsyncTask<TextMessage, Void, Void>() {
                 @Override
-                protected Boolean doInBackground(TextMessage... textMessages) {
-                    Log.e(TAG, "1");
-                    for (TextMessage message : textMessages) {
-                        Log.e(TAG, "2");
-                        AuditTrailDbHelper auditTrailDbHelper = new AuditTrailDbHelper(context);
-                        auditTrailDbHelper.insertTextMessage(message);
-                    }
-                    return true;
+                protected Void doInBackground(TextMessage... textMessages) {
+                    AuditTrailDbHelper auditTrailDbHelper = new AuditTrailDbHelper(context);
+                    auditTrailDbHelper.insertTextMessage(textMessages[0]);
+                    return null;
                 }
             };
-
-            asyncTask.execute(new TextMessage[]{textMessage});
+            if (newMessage) {
+                asyncTask.execute(new TextMessage[]{textMessage});
+            }
         } else {
             Log.e(TAG, "The new text message is not valid.");
             return;
@@ -68,10 +66,26 @@ public class MessageViewManager {
                 new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         params.setMargins(30, 15, 30, 15);
 
-        messageViews.addFirst(messageView);
-        messageContainer.addView(messageView, params);
+        if (!newMessage) {
+            messageViews.addLast(messageView);
+            messageContainer.addView(messageView, 0, params);
 
-        messageView.startAnimation();
+        } else {
+            messageViews.addFirst(messageView);
+            messageContainer.addView(messageView, params);
+            messageView.startAnimation();
+        }
+    }
+
+    public long getFirstMessageEpoch() {
+        if (messageViews.size() == 0) {
+            Log.d(TAG, "There is no message");
+            return -1;
+        } else {
+            Log.d(TAG, "The first time epoch is " +
+                        messageViews.getLast().getTextMessage().getTimestamp());
+            return messageViews.getLast().getTextMessage().getTimestamp();
+        }
     }
 
     private Deque<TextMessageView> messageViews;

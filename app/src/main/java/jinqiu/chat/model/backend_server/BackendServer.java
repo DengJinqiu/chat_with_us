@@ -100,9 +100,13 @@ public class BackendServer extends HandlerThread {
                 if (textMessage.getContext().contains("bill")) {
                     message.arg2 = RequestAndResponseType.SUCCESS_WITH_ADDITIONAL_FIELDS;
 
+                    Log.d(TAG, "Simulate reply from company after 1 second");
+                    SystemClock.sleep(1000);
+
+                    // The timestamp will be update when adding this message to chat panel
                     StatementMessage statementMessage =
-                            new StatementMessage(TextMessage.COMPANY,
-                                                 "Here is your current statment:",
+                            new StatementMessage(TextMessage.COMPANY, 0,
+                                                 "Here is your current statement:",
                                                  "728323981238921", 60.85, 8.4, 20160226, 135.2);
 
                     Log.i(TAG, "Auto reply a statement to application server: " + statementMessage.toString());
@@ -112,7 +116,8 @@ public class BackendServer extends HandlerThread {
                     message.arg2 = RequestAndResponseType.SUCCESS;
 
                     Log.i(TAG, "Simulate reply from company.");
-                    replyTextMessage = new TextMessage(TextMessage.COMPANY, textMessage.getContext());
+                    // The timestamp will be update when adding this message to chat panel
+                    replyTextMessage = new TextMessage(TextMessage.COMPANY, 0, textMessage.getContext());
                     simulateReply = true;
                 }
             } catch (JSONException e) {
@@ -124,8 +129,8 @@ public class BackendServer extends HandlerThread {
 
         // Simulate the scenairo that the company replies this new message after 2 second
         if (simulateReply && replyTextMessage != null) {
-            Log.d(TAG, "Simulate reply from company after 2 second");
-            SystemClock.sleep(0);
+            Log.d(TAG, "Simulate reply from company after 1 second");
+            SystemClock.sleep(1000);
             Log.d(TAG, "Reply from company: " + replyTextMessage.toString());
             sendMessageRequest(replyTextMessage.toString());
         }

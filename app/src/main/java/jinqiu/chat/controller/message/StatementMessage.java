@@ -6,9 +6,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class StatementMessage extends TextMessage {
-    public StatementMessage(int userType, String context,
+    public StatementMessage(int userType, long timestamp, String context,
                             String accountNumber, double price, double tax, int dueDate, double due) {
-        super(userType, context);
+        super(userType, timestamp, context);
 
         this.accountNumber = accountNumber;
         this.price = price;

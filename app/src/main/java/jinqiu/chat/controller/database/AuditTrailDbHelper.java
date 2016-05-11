@@ -130,15 +130,30 @@ public class AuditTrailDbHelper extends SQLiteOpenHelper {
                 AuditTrailContract.MessageEntry._ID + " = " +
                 AuditTrailContract.DetailEntry.MESSAGE_ID);
 
-        String orderBy = AuditTrailContract.MessageEntry.TIME_STAMP + " ASC";
+        String where = AuditTrailContract.MessageEntry.TIME_STAMP + " < ?";
+        String[] whereArgs = new String[] {"" + epoch};
+        String orderBy = AuditTrailContract.MessageEntry.TIME_STAMP + " DESC";
 
-        Cursor cursor = sqLiteQueryBuilder.query(
-                getReadableDatabase(),
-                projection, null, null, null, null, orderBy, "" + number);
+        Cursor cursor;
+            cursor = sqLiteQueryBuilder.query(getReadableDatabase(),
+                    projection, epoch > 0 ? where : null, epoch > 0 ? whereArgs : null,
+                    null, null, orderBy, "" + number);
 
         try {
             while (cursor.moveToNext()) {
                 Log.i(TAG, "Got new cursor");
+                cursor.moveToFirst();
+                while (cursor.isAfterLast() == false) {
+                    TextMessage textMessage =
+                            new TextMessage(cursor.getInt(0), cursor.getLong(1), cursor.getString(2));
+                    if (cursor.getString(3) != null) {
+                        textMessage = new StatementMessage(cursor.getType(0), cursor.getLong(1), cursor.getString(2), cursor.getString(3), cursor.getDouble(4),
+                                cursor.getDouble(5), cursor.getInt(6), cursor.getDouble(7));
+                    }
+                    res.add(textMessage);
+
+                    cursor.moveToNext();
+                }
             }
         } finally {
             cursor.close();

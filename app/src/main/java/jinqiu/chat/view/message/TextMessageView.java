@@ -70,6 +70,10 @@ public class TextMessageView extends RelativeLayout {
         super.startAnimation(animation);
     }
 
+    public TextMessage getTextMessage() {
+        return this.textMessage;
+    }
+
     private TextMessage textMessage;
 
     protected TextView inputField;

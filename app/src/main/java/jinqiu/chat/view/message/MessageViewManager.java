@@ -3,9 +3,11 @@ package jinqiu.chat.view.message;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -21,6 +23,8 @@ public class MessageViewManager {
         this.messageContainer = messageContainer;
         this.messageViews = new LinkedList<>();
         this.context = messageContainer.getContext();
+        this.firstTimestamp = -1;
+        this.lastestTimestamp = -1;
     }
 
     public void addMessageView(TextMessage textMessage, boolean newMessage) {
@@ -62,19 +66,40 @@ public class MessageViewManager {
             Log.e(TAG, "The new text message is not valid.");
             return;
         }
+
         LinearLayout.LayoutParams params =
                 new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         params.setMargins(30, 15, 30, 15);
 
-        if (!newMessage) {
-            messageViews.addLast(messageView);
-            messageContainer.addView(messageView, 0, params);
-
-        } else {
+        if (newMessage) {
+            if (textMessage.getTimestamp() - lastestTimestamp > SHOW_TIME_LABEL_INTERVAL ||
+                lastestTimestamp < 0) {
+                Log.d(TAG, "Add timestamp label for new message " + textMessage.getTimestamp());
+                messageContainer.addView(getTimestampLabel(textMessage.getTimestamp()), params);
+                lastestTimestamp = textMessage.getTimestamp();
+                firstTimestamp = lastestTimestamp;
+            }
             messageViews.addFirst(messageView);
             messageContainer.addView(messageView, params);
             messageView.startAnimation();
+        } else {
+            messageViews.addLast(messageView);
+            messageContainer.addView(messageView, 0, params);
+            if (firstTimestamp - textMessage.getTimestamp() > SHOW_TIME_LABEL_INTERVAL ||
+                firstTimestamp < 0) {
+                Log.d(TAG, "Add timestamp label for old message " + textMessage.getTimestamp());
+                messageContainer.addView(getTimestampLabel(textMessage.getTimestamp()), 0, params);
+                firstTimestamp = textMessage.getTimestamp();
+                lastestTimestamp = firstTimestamp;
+            }
         }
+    }
+
+    private TextView getTimestampLabel(long epoch) {
+        TextView textView = new TextView(context);
+        textView.setText("epoch is " + epoch);
+        textView.setPadding(60, 40, 60, 40);
+        return textView;
     }
 
     public long getFirstMessageEpoch() {
@@ -93,6 +118,12 @@ public class MessageViewManager {
     private LinearLayout messageContainer;
 
     private Context context;
+
+    private long lastestTimestamp;
+
+    private long firstTimestamp;
+
+    private static final double SHOW_TIME_LABEL_INTERVAL = 60000; // 1 min
 
     private static final String TAG = "MessageViewManager";
 }

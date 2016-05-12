@@ -65,7 +65,8 @@ public class ApplicationServer extends HandlerThread {
     }
 
     private void receiveNewAddedMessageFromChatPanel(TextMessage textMessage) {
-        if (textMessage == null) {
+        if (textMessage == null || textMessage.getContext() == null ||
+            textMessage.getContext().length() == 0) {
             Log.e(TAG, "Got invalid message");
             return;
         }

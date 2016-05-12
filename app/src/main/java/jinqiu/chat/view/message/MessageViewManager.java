@@ -28,7 +28,12 @@ public class MessageViewManager {
     }
 
     public void addMessageView(TextMessage textMessage, boolean newMessage) {
-        TextMessageView messageView;
+        if (textMessage == null || textMessage.getContext() == null ||
+            textMessage.getContext().length() == 0) {
+            Log.e(TAG, "The input text mesage is invalid, cannot add it to the chat panl.");
+            return;
+        }
+        final TextMessageView messageView;
         if (newMessage) {
             textMessage.updateTimestamp();
         }
@@ -36,7 +41,7 @@ public class MessageViewManager {
         if (textMessage instanceof StatementMessage) {
             Log.i(TAG, "Add statement message");
             messageView =
-                    new StatementMessageView((StatementMessage) textMessage, context);
+                    new StatementMessageView((StatementMessage) textMessage, newMessage, context);
             AsyncTask asyncTask = new AsyncTask<StatementMessage, Void, Void>() {
                 @Override
                 protected Void doInBackground(StatementMessage... textMessages) {
@@ -50,7 +55,7 @@ public class MessageViewManager {
             }
         } else if (textMessage instanceof TextMessage) {
             Log.i(TAG, "Add text message");
-            messageView = new TextMessageView(textMessage, messageContainer.getContext());
+            messageView = new TextMessageView(textMessage, newMessage, messageContainer.getContext());
             AsyncTask asyncTask = new AsyncTask<TextMessage, Void, Void>() {
                 @Override
                 protected Void doInBackground(TextMessage... textMessages) {
@@ -67,28 +72,24 @@ public class MessageViewManager {
             return;
         }
 
-        LinearLayout.LayoutParams params =
-                new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        params.setMargins(30, 15, 30, 15);
-
         if (newMessage) {
             if (textMessage.getTimestamp() - lastestTimestamp > SHOW_TIME_LABEL_INTERVAL ||
                 lastestTimestamp < 0) {
                 Log.d(TAG, "Add timestamp label for new message " + textMessage.getTimestamp());
-                messageContainer.addView(getTimestampLabel(textMessage.getTimestamp()), params);
+                messageContainer.addView(getTimestampLabel(textMessage.getTimestamp()));
                 lastestTimestamp = textMessage.getTimestamp();
                 firstTimestamp = lastestTimestamp;
             }
             messageViews.addFirst(messageView);
-            messageContainer.addView(messageView, params);
-            messageView.startAnimation();
+            messageContainer.addView(messageView);
+            //messageView.startAnimation();
         } else {
             messageViews.addLast(messageView);
-            messageContainer.addView(messageView, 0, params);
+            messageContainer.addView(messageView, 0);
             if (firstTimestamp - textMessage.getTimestamp() > SHOW_TIME_LABEL_INTERVAL ||
                 firstTimestamp < 0) {
                 Log.d(TAG, "Add timestamp label for old message " + textMessage.getTimestamp());
-                messageContainer.addView(getTimestampLabel(textMessage.getTimestamp()), 0, params);
+                messageContainer.addView(getTimestampLabel(textMessage.getTimestamp()), 0);
                 firstTimestamp = textMessage.getTimestamp();
                 lastestTimestamp = firstTimestamp;
             }

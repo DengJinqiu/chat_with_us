@@ -1,73 +1,119 @@
 package jinqiu.chat.view.message;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
-import android.support.v4.content.ContextCompat;
-import android.view.Gravity;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import jinqiu.chat.R;
 import jinqiu.chat.controller.message.TextMessage;
 
 public class TextMessageView extends RelativeLayout {
-    public TextMessageView(TextMessage textMessage, Context context) {
+    public TextMessageView(TextMessage textMessage, boolean newMessage, Context context) {
         super(context);
 
         this.textMessage = textMessage;
 
-        GradientDrawable gradientDrawable = new GradientDrawable();
+        this.animators = new ArrayList<> ();
 
-        inputField = new TextView(context);
-        inputField.setId(inputField.generateViewId());
-        inputField.setText(textMessage.getContext());
-
-        inputField.setPadding(60, 40, 60, 40);
-
-        RelativeLayout.LayoutParams inputFieldParams =
-                new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (textMessage.getUserType() == TextMessage.CLIENT) {
-            gradientDrawable.setStroke(0, Color.WHITE);
-            gradientDrawable.setColor(ContextCompat.getColor(context, R.color.colorMessageBackground));
-
-            inputFieldParams.setMargins(50, 0, 0, 0);
-
-            gradientDrawable.setCornerRadii(new float[] { 80, 80, 80, 80, 0, 0, 80, 80 });
-            inputField.setGravity(Gravity.RIGHT);
-            inputFieldParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            textView = (TextView) layoutInflater.inflate(R.layout.text_message_view_right, this, false);
+        } else if (textMessage.getUserType() == TextMessage.COMPANY) {
+            textView = (TextView) layoutInflater.inflate(R.layout.text_message_view_left, this, false);
         } else {
-            gradientDrawable.setStroke(5, Color.parseColor("#DFDEE2"));
-            gradientDrawable.setColor(Color.WHITE);
-
-            inputFieldParams.setMargins(0, 0, 50, 0);
-
-            gradientDrawable.setCornerRadii(new float[] { 80, 80, 80, 80, 80, 80, 0, 0 });
-            inputField.setGravity(Gravity.LEFT);
-            inputFieldParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            Log.e(TAG, "Text message type is not valid.");
+            return;
         }
 
-        inputField.setTypeface(Typeface.DEFAULT, 0);
-        inputField.setTextSize(18);
-        inputField.setBackground(gradientDrawable);
+        textView.setText(textMessage.getContext());
+        this.addView(textView);
+        if (newMessage) {
+            textView.setVisibility(VISIBLE);
+        }
 
-        this.addView(inputField, inputFieldParams);
+        if (newMessage) {
+            // Do the animation before draw on screen
+            getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        startAnimation();
+                    }
+                }
+            );
+            textView.setVisibility(INVISIBLE);
+        }
     }
 
-    public void startAnimation() {
-        int tmp = textMessage.getUserType() == TextMessage.CLIENT ? 1 : 0;
-        Animation animation = new ScaleAnimation(
-                0, 1f, // Start and end values for the X axis scaling
-                0, 1f, // Start and end values for the Y axis scaling
-                Animation.RELATIVE_TO_SELF, tmp, // Pivot point of X scaling
-                Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
-        animation.setFillAfter(true); // Needed to keep the result of the animation
-        animation.setDuration(500);
-        super.startAnimation(animation);
+    private void startAnimation() {
+        Log.d(TAG, "Start animation.");
+        initAnimation();
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playSequentially(animators);
+        animatorSet.start();
+    }
+
+    protected void initAnimation() {
+        if (textView != null) {
+            ObjectAnimator animator;
+            if (textMessage.getUserType() == TextMessage.CLIENT) {
+                animator = (ObjectAnimator) AnimatorInflater.loadAnimator(getContext(),
+                        R.animator.text_message_view_right_animation);
+                textView.setPivotX(textView.getMeasuredWidth());
+                textView.setPivotY(textView.getMeasuredHeight());
+            } else if (textMessage.getUserType() == TextMessage.COMPANY) {
+                animator = (ObjectAnimator) AnimatorInflater.loadAnimator(getContext(),
+                        R.animator.text_message_view_left_animation);
+                textView.setPivotX(0);
+                textView.setPivotY(textView.getMeasuredHeight());
+            } else {
+                Log.e(TAG, "User type is invalid, cannot animate");
+                return;
+            }
+
+            AddAnimatorToView(textView, animator);
+            animators.add(animator);
+        } else {
+            Log.e(TAG, "Text view is empty, cannot animate");
+        }
+    }
+
+    protected void AddAnimatorToView(final View view, Animator animator) {
+        animator.setTarget(view);
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                view.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
     }
 
     public TextMessage getTextMessage() {
@@ -76,5 +122,9 @@ public class TextMessageView extends RelativeLayout {
 
     private TextMessage textMessage;
 
-    protected TextView inputField;
+    protected TextView textView;
+
+    protected List<Animator> animators;
+
+    private static final String TAG = "TextMessageView";
 }

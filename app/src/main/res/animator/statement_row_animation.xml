@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="@integer/text_message_duration" >
+    <propertyValuesHolder android:propertyName="scaleX" android:valueFrom="1f" android:valueTo="1f"/>
+    <propertyValuesHolder android:propertyName="scaleY" android:valueFrom="0f" android:valueTo="1f"/>
+</objectAnimator>

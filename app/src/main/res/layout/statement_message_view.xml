@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/statement_table"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:background="@drawable/statement_message_view_background">
+
+    <TableRow
+        android:id="@+id/row_account"
+        android:layout_weight="1">
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight=".5"
+            android:text="ACCOUNT NUMBER:" />
+        <TextView
+            android:id="@+id/account_number_value"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight=".5" />
+    </TableRow>
+
+    <View
+        android:id="@+id/row_line_1"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+
+    <TableRow
+        android:id="@+id/row_price"
+        android:layout_weight="1">
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight=".7"
+            android:text="PRODUCT PRICE:" />
+        <TextView
+            android:id="@+id/product_price"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight=".3" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/row_tax"
+        android:layout_weight="1">
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight=".7"
+            android:text="TAXES, SURCHARGES\n &amp; FEES:" />
+        <TextView
+            android:id="@+id/tax_value"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight=".3" />
+    </TableRow>
+
+    <View
+        android:id="@+id/row_line_2"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+
+    <TableRow
+        android:id="@+id/row_due_title"
+        android:layout_weight="1">
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight=".7"
+            android:text="DUE DATE:" />
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight=".3"
+            android:text="TOTAL DUE" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/row_due_value"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/due_date_value"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight=".7" />
+        <TextView
+            android:id="@+id/total_due_value"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight=".3" />
+    </TableRow>
+
+</TableLayout>

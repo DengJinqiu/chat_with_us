@@ -144,6 +144,9 @@ public class ChatPanel extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (inputField.getText().toString().length() == 0) {
+                    return;
+                }
                 // The timestamp will be update when adding this message to chat panel
                 TextMessage textMessage =
                         new TextMessage(TextMessage.CLIENT, 0, inputField.getText().toString());

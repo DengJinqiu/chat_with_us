@@ -11,7 +11,9 @@
 
     <TableRow
         android:id="@+id/row_account"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:paddingTop="@dimen/statement_row_blank"
+        android:paddingBottom="@dimen/statement_row_blank">
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
@@ -20,7 +22,9 @@
         <TextView
             android:id="@+id/account_number_value"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:layout_width="0dp"
+            android:gravity="center"
             android:layout_weight=".5" />
     </TableRow>
 
@@ -33,7 +37,9 @@
 
     <TableRow
         android:id="@+id/row_price"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:paddingTop="@dimen/statement_row_blank"
+        android:paddingBottom="@dimen/statement_row_blank" >
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
@@ -43,11 +49,13 @@
             android:id="@+id/product_price"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
+            android:textStyle="bold"
             android:layout_weight=".3" />
     </TableRow>
 
     <TableRow
         android:id="@+id/row_tax"
+        android:paddingBottom="@dimen/statement_row_blank"
         android:layout_weight="1">
         <TextView
             android:layout_height="wrap_content"
@@ -58,6 +66,7 @@
             android:id="@+id/tax_value"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
+            android:textStyle="bold"
             android:layout_weight=".3" />
     </TableRow>
 
@@ -70,7 +79,8 @@
 
     <TableRow
         android:id="@+id/row_due_title"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:paddingTop="@dimen/statement_row_blank" >
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
@@ -85,16 +95,20 @@
 
     <TableRow
         android:id="@+id/row_due_value"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:paddingBottom="@dimen/statement_row_blank">
         <TextView
             android:id="@+id/due_date_value"
             android:layout_height="wrap_content"
+            android:textSize="20sp"
             android:layout_width="0dp"
             android:layout_weight=".7" />
         <TextView
             android:id="@+id/total_due_value"
             android:layout_height="wrap_content"
+            android:textSize="20sp"
             android:layout_width="0dp"
+            android:textStyle="bold"
             android:layout_weight=".3" />
     </TableRow>
 

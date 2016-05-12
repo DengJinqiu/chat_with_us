@@ -52,6 +52,11 @@ public class StatementMessage extends TextMessage {
         return dueDate;
     }
 
+    public String getDueDateString() {
+        String tmp = dueDate + "";
+        return tmp.substring(4,6) + "/" + tmp.substring(6,8) + "/" + tmp.substring(2,4);
+    }
+
     public String getAccountNumber() {
         return accountNumber;
     }

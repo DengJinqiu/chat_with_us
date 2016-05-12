@@ -2,17 +2,18 @@ package jinqiu.chat.view.message;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.format.DateFormat;
 import android.util.Log;
-import android.view.ViewGroup;
+import android.view.LayoutInflater;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout.LayoutParams;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Deque;
 import java.util.LinkedList;
 
+import jinqiu.chat.R;
 import jinqiu.chat.controller.database.AuditTrailDbHelper;
 import jinqiu.chat.controller.message.StatementMessage;
 import jinqiu.chat.controller.message.TextMessage;
@@ -82,7 +83,6 @@ public class MessageViewManager {
             }
             messageViews.addFirst(messageView);
             messageContainer.addView(messageView);
-            //messageView.startAnimation();
         } else {
             messageViews.addLast(messageView);
             messageContainer.addView(messageView, 0);
@@ -97,9 +97,12 @@ public class MessageViewManager {
     }
 
     private TextView getTimestampLabel(long epoch) {
-        TextView textView = new TextView(context);
-        textView.setText("epoch is " + epoch);
-        textView.setPadding(60, 40, 60, 40);
+        Date date = new Date(epoch);
+        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        TextView textView = (TextView) layoutInflater.inflate(R.layout.time_label, messageContainer, false);
+
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        textView.setText(format.format(date));
         return textView;
     }
 

@@ -13,8 +13,11 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import jinqiu.chat.R;
 import jinqiu.chat.controller.message.StatementMessage;
@@ -40,7 +43,7 @@ public class StatementMessageView extends TextMessageView {
         ((TextView) this.statementMessage.findViewById(R.id.account_number_value)).setText(statementMessage.getAccountNumber());
         ((TextView) this.statementMessage.findViewById(R.id.product_price)).setText(String.format("%.2f", statementMessage.getPrice()));
         ((TextView) this.statementMessage.findViewById(R.id.tax_value)).setText(String.format("%.2f", statementMessage.getTax()));
-        ((TextView) this.statementMessage.findViewById(R.id.due_date_value)).setText(""+statementMessage.getDueDate());
+        ((TextView) this.statementMessage.findViewById(R.id.due_date_value)).setText(statementMessage.getDueDateString());
         ((TextView) this.statementMessage.findViewById(R.id.total_due_value)).setText("$" + String.format("%.2f", statementMessage.getDue()));
 
         LayoutParams params = (LayoutParams) this.statementMessage.getLayoutParams();
